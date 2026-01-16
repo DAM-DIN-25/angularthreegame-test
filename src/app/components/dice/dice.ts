@@ -41,8 +41,13 @@ export class Dice {
         '6',
     ];
 
-    onSensorEnter(event: number) {
-        console.log('Sensor entered by body with ID:', event);
+    onSensorEnter(event: any, id: number) {
+        // if (event.target.rigidBody.userdata)
+        console.log('Sensor entered by body with:', event.target);
+
+        if (event.target.rigidBodyObject.userdata)
+            console.warn('rigidBodyObject:', event.target.rigidBodyObject.userdata);
+
     }
 
     constructor() {

@@ -26,16 +26,14 @@
         <app-dice [position]="[0, 1, 2]" />
         <app-dice [position]="[0, 1, -2]" /> -->
 
-        <ngt-object3D rigidBody="fixed">
+        <ngt-object3D rigidBody="fixed" [userdata]="{ name: 'ground' }">
             <ngt-mesh [rotation]="[-Math.PI / 2, 0, 0]"
                       [position]="[0, -1, 0]"
                       receiveShadow>
-                <ngt-plane-geometry *args="[100, 100]" />
+                <ngt-box-geometry *args="[100, 100]" />
                 <ngt-mesh-standard-material color="#228B22" />
             </ngt-mesh>
         </ngt-object3D>
-
-
 
         <ngts-contact-shadows [options]="{
                 position: [0, 0, 0],
@@ -49,14 +47,19 @@
 
         <!-- invisible walls -->
         <ngt-object3D [cuboidCollider]="[limitHeight(), 1, limitHeight()]"
+                        [userdata]="{ name: 'ground' }"
                       [position]="[0, -6, 0]" />
         <ngt-object3D [cuboidCollider]="[limitWidth(), limitHeight(), 1]"
+        [userdata]="{ name: 'ground' }"
                       [position]="[0, 0, -limitWidth()]" />
         <ngt-object3D [cuboidCollider]="[limitWidth(), limitHeight(), 1]"
+        [userdata]="{ name: 'ground' }"
                       [position]="[0, 0, limitWidth()]" />
         <ngt-object3D [cuboidCollider]="[1, limitHeight(), limitWidth()]"
+        [userdata]="{ name: 'ground' }"
                       [position]="[-limitWidth(), 0, 0]" />
         <ngt-object3D [cuboidCollider]="[1, limitHeight(), limitWidth()]"
+        [userdata]="{ name: 'ground' }"
                       [position]="[limitWidth(), 0, 0]" />
 
     </ng-template>

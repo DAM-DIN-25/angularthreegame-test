@@ -11,26 +11,19 @@
 
     <app-poker-dice />
 
-    <!-- collision rays -->
-    <ngt-object3D [cylinderCollider]="[0.02, 1]"
+    <!-- collision sensors -->
+    <ngt-object3D [cylinderCollider]="[1, 1]"
                   [options]="{ sensor: true }"
                   [position]="[0, -1, 0]"
-                  (intersectionEnter)="onSensorEnter(1)">
-        <ngt-mesh>
-            <ngt-cylinder-geometry *args="[0.02, 0.02, 1, 8]" />
-            <ngt-mesh-standard-material color="red" />
-        </ngt-mesh>
+                  (intersectionEnter)="onSensorEnter($event, 1)">
+
     </ngt-object3D>
 
     <ngt-object3D [cylinderCollider]="[0.02, 1]"
                   [options]="{ sensor: true }"
-                  rigidBody="fixed"
-                  [position]="[0, 0, -1]"
-                  (intersectionEnter)="onSensorEnter(2)">
-        <ngt-mesh>
-            <ngt-cylinder-geometry *args="[0.02, 0.02, 1, 8]" />
-            <ngt-mesh-standard-material color="green" />
-        </ngt-mesh>
+                  [position]="[0, 1, 0]"
+                  (intersectionEnter)="onSensorEnter($event, 2)">
+
     </ngt-object3D>
 
 </ngt-object3D>
