@@ -21,12 +21,18 @@
     <ng-template>
 
         <app-dice [position]="[0, 1, 0]" />
-        <!-- <app-dice [position]="[2, 1, 0]" />
+        <app-dice [position]="[2, 1, 0]" />
         <app-dice [position]="[-2, 1, 0]" />
         <app-dice [position]="[0, 1, 2]" />
-        <app-dice [position]="[0, 1, -2]" /> -->
+        <app-dice [position]="[0, 1, -2]" />
+        <app-dice [position]="[0, 1, 0]" />
+        <app-dice [position]="[2, 1, 0]" />
+        <app-dice [position]="[-2, 1, 0]" />
+        <app-dice [position]="[0, 1, 2]" />
+        <app-dice [position]="[0, 1, -2]" />
 
-        <ngt-object3D rigidBody="fixed" [userdata]="{ name: 'ground' }">
+        <ngt-object3D rigidBody="fixed"
+                      [userdata]="{ name: 'ground' }">
             <ngt-mesh [rotation]="[-Math.PI / 2, 0, 0]"
                       [position]="[0, -1, 0]"
                       receiveShadow>
@@ -47,19 +53,19 @@
 
         <!-- invisible walls -->
         <ngt-object3D [cuboidCollider]="[limitHeight(), 1, limitHeight()]"
-                        [userdata]="{ name: 'ground' }"
+                      [userdata]="{ name: 'ground' }"
                       [position]="[0, -6, 0]" />
         <ngt-object3D [cuboidCollider]="[limitWidth(), limitHeight(), 1]"
-        [userdata]="{ name: 'ground' }"
+                      [userdata]="{ name: 'ground' }"
                       [position]="[0, 0, -limitWidth()]" />
         <ngt-object3D [cuboidCollider]="[limitWidth(), limitHeight(), 1]"
-        [userdata]="{ name: 'ground' }"
+                      [userdata]="{ name: 'ground' }"
                       [position]="[0, 0, limitWidth()]" />
         <ngt-object3D [cuboidCollider]="[1, limitHeight(), limitWidth()]"
-        [userdata]="{ name: 'ground' }"
+                      [userdata]="{ name: 'ground' }"
                       [position]="[-limitWidth(), 0, 0]" />
         <ngt-object3D [cuboidCollider]="[1, limitHeight(), limitWidth()]"
-        [userdata]="{ name: 'ground' }"
+                      [userdata]="{ name: 'ground' }"
                       [position]="[limitWidth(), 0, 0]" />
 
     </ng-template>
