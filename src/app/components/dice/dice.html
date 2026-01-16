@@ -1,0 +1,36 @@
+<ngt-object3D #dice
+              rigidBody
+              [options]="{
+                    restitution: 0.7,
+                    colliders: 'cuboid',
+                    linearVelocity: initialVelocity(),
+                    angularVelocity: initialAngularVelocity()
+               }"
+              [position]="position()"
+              castShadow>
+
+    <app-poker-dice />
+
+    <!-- collision rays -->
+    <ngt-object3D [cylinderCollider]="[0.02, 1]"
+                  [options]="{ sensor: true }"
+                  [position]="[0, -1, 0]"
+                  (intersectionEnter)="onSensorEnter(1)">
+        <ngt-mesh>
+            <ngt-cylinder-geometry *args="[0.02, 0.02, 1, 8]" />
+            <ngt-mesh-standard-material color="red" />
+        </ngt-mesh>
+    </ngt-object3D>
+
+    <ngt-object3D [cylinderCollider]="[0.02, 1]"
+                  [options]="{ sensor: true }"
+                  rigidBody="fixed"
+                  [position]="[0, 0, -1]"
+                  (intersectionEnter)="onSensorEnter(2)">
+        <ngt-mesh>
+            <ngt-cylinder-geometry *args="[0.02, 0.02, 1, 8]" />
+            <ngt-mesh-standard-material color="green" />
+        </ngt-mesh>
+    </ngt-object3D>
+
+</ngt-object3D>

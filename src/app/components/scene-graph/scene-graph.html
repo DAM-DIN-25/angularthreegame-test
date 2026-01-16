@@ -1,0 +1,66 @@
+<ngt-ambient-light [intensity]="0.5" />
+
+<ngts-soft-shadows [options]="{ size: 100, samples: 17, focus: 0 }" />
+
+<ngt-spot-light [position]="[5, 10, -10]"
+                [intensity]="0.5 * Math.PI"
+                [angle]="0.5"
+                [penumbra]="1"
+                [decay]="0"
+                castShadow
+                [shadow.mapSize.width]="1024"
+                [shadow.mapSize.height]="1024"
+                [shadow.camera.far]="50"
+                [shadow.camera.left]="-10"
+                [shadow.camera.right]="10"
+                [shadow.camera.top]="10"
+                [shadow.camera.bottom]="-10" />
+
+<ngtr-physics [options]="{gravity: [0, -9.81, 0]}">
+
+    <ng-template>
+
+        <app-dice [position]="[0, 1, 0]" />
+        <!-- <app-dice [position]="[2, 1, 0]" />
+        <app-dice [position]="[-2, 1, 0]" />
+        <app-dice [position]="[0, 1, 2]" />
+        <app-dice [position]="[0, 1, -2]" /> -->
+
+        <ngt-object3D rigidBody="fixed">
+            <ngt-mesh [rotation]="[-Math.PI / 2, 0, 0]"
+                      [position]="[0, -1, 0]"
+                      receiveShadow>
+                <ngt-plane-geometry *args="[100, 100]" />
+                <ngt-mesh-standard-material color="#228B22" />
+            </ngt-mesh>
+        </ngt-object3D>
+
+
+
+        <ngts-contact-shadows [options]="{
+                position: [0, 0, 0],
+                opacity: 0.6,
+                scale: 10,
+                blur: 2.5,
+                far: 4,
+                resolution: 512,
+                color: '#000000',
+            }" />
+
+        <!-- invisible walls -->
+        <ngt-object3D [cuboidCollider]="[limitHeight(), 1, limitHeight()]"
+                      [position]="[0, -6, 0]" />
+        <ngt-object3D [cuboidCollider]="[limitWidth(), limitHeight(), 1]"
+                      [position]="[0, 0, -limitWidth()]" />
+        <ngt-object3D [cuboidCollider]="[limitWidth(), limitHeight(), 1]"
+                      [position]="[0, 0, limitWidth()]" />
+        <ngt-object3D [cuboidCollider]="[1, limitHeight(), limitWidth()]"
+                      [position]="[-limitWidth(), 0, 0]" />
+        <ngt-object3D [cuboidCollider]="[1, limitHeight(), limitWidth()]"
+                      [position]="[limitWidth(), 0, 0]" />
+
+    </ng-template>
+
+    <ngts-orbit-controls />
+
+</ngtr-physics>

@@ -5,5 +5,9 @@ import { routes } from './app.routes';
 import { provideNgtRenderer } from 'angular-three/dom';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideBrowserGlobalErrorListeners(), provideRouter(routes), provideNgtRenderer()],
+    providers: [
+        provideBrowserGlobalErrorListeners(),
+        provideRouter(routes),
+        provideNgtRenderer()
+    ],
 };

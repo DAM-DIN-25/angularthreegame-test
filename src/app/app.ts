@@ -1,12 +1,16 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, } from '@angular/core';
+import { NgtCanvas } from 'angular-three/dom';
+import { SceneGraph } from './components/scene-graph/scene-graph';
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+    selector: 'app-root',
+    imports: [
+        NgtCanvas,
+        SceneGraph
+    ],
+    templateUrl: './app.html',
+    styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('ThreeGame');
+
 }
