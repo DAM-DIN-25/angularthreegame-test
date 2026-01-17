@@ -1,7 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output, signal, viewChild } from '@angular/core';
-import { beforeRender, NgtArgs } from 'angular-three';
+import { beforeRender } from 'angular-three';
 import * as THREE from 'three';
-import { NgtrRigidBody, NgtrAnyCollider, NgtrCylinderCollider } from 'angular-three-rapier';
+import { NgtrRigidBody } from 'angular-three-rapier';
 
 import { PokerDice } from "./dice-gltf-instance";
 
@@ -9,60 +9,60 @@ import { PokerDice } from "./dice-gltf-instance";
     selector: 'app-dice',
     imports: [
         NgtrRigidBody,
-        PokerDice,
-        NgtArgs,
-        NgtrAnyCollider,
-        NgtrCylinderCollider
+        PokerDice
     ],
     templateUrl: './dice.html',
     styleUrl: './dice.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class Dice {
+
     rotation = signal<[number, number, number]>([0, 0, 0]);
     initialVelocity = signal<[number, number, number]>([0, 0, 0]);
     initialAngularVelocity = signal<[number, number, number]>([0, 0, 0]);
+
     position = input<[number, number, number]>([0, 4, 0]);
 
+    ground = input<NgtrRigidBody>;
+
     result = output<string>();
+
+    hovered = signal(false);
 
     diceObject = viewChild.required<NgtrRigidBody>('dice');
 
     private resultEmitted = false;
     private initialized = false;
-    private canCheckResult = false;
 
     private resultsMap: string[] = [
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
+        'K',
+        'Q',
+        '9',
+        'A',
+        '10',
+        'J',
     ];
 
-    onSensorEnter(event: any, id: number) {
-        console.log('Sensor entered by body with:', event.target);
-
-        if (event.target.rigidBodyObject.userdata)
-            console.warn('rigidBodyObject:', event.target.rigidBodyObject.userdata);
-
-    }
-
     constructor() {
-        setTimeout(() => {
-            this.canCheckResult = true;
-        }, 5000);
 
         beforeRender(() => {
-            if (this.initialized && !this.resultEmitted && this.canCheckResult) {
+            if (this.diceObject().rigidBody()?.isSleeping() && this.initialized && !this.resultEmitted) {
                 this.checkResult();
             }
         });
     }
 
+    onDiceClick() {
+        // reroll the dice
+        this.initialize();
+        this.resultEmitted = false;
+    }
+
     ngAfterViewInit() {
-        console.log('Dice rigid body initialized:', this.diceObject());
+        this.initialize();
+    }
+
+    initialize() {
         // random initial rotation
         this.rotation.set([
             Math.random() * Math.PI * 2,
@@ -87,10 +87,37 @@ export class Dice {
     }
 
     checkResult() {
-        if (!this.diceObject()?.rigidBody()?.isMoving()) {
+        if (!this.diceObject()?.rigidBody()?.isSleeping() || this.resultEmitted) {
             return;
         }
 
+        const object3D = this.diceObject().objectRef.nativeElement;
 
+        // Define directions for each face of the dice
+        const faceDirections = [
+            new THREE.Vector3(0, 1, 0),   // Up
+            new THREE.Vector3(0, -1, 0),  // Down
+            new THREE.Vector3(1, 0, 0),   // Right
+            new THREE.Vector3(-1, 0, 0),  // Left
+            new THREE.Vector3(0, 0, 1),   // Front
+            new THREE.Vector3(0, 0, -1)   // Back
+        ];
+
+        // Create a box representing the ground area
+        const groundBox = new THREE.Box3(new THREE.Vector3(-10, -1, -10), new THREE.Vector3(10, -0.5, 10));
+
+        // For each face, cast a ray to see if it intersects with the ground box
+        faceDirections.forEach((normal, index) => {
+
+            // Create a ray starting from the dice center in the direction of the face normal
+            const ray = new THREE.Ray(object3D.position, normal.applyEuler(object3D.rotation));
+
+            if (ray.intersectBox(groundBox, new THREE.Vector3())) {
+                this.result.emit(this.resultsMap[index]);
+                this.resultEmitted = true;
+                console.log('Dice result:', this.resultsMap[index], 'from face index', index);
+            }
+        });
     }
+
 }

@@ -2,28 +2,15 @@
               rigidBody
               [options]="{
                     restitution: 0.7,
-                    colliders: 'cuboid',
                     linearVelocity: initialVelocity(),
                     angularVelocity: initialAngularVelocity()
                }"
               [position]="position()"
-              castShadow>
+              castShadow
+              (click)="onDiceClick()"
+              (pointerover)="hovered.set(true)"
+              (pointerout)="hovered.set(false)">
 
     <app-poker-dice />
-
-    <!-- collision sensors -->
-    <ngt-object3D [cylinderCollider]="[1, 1]"
-                  [options]="{ sensor: true }"
-                  [position]="[0, -1, 0]"
-                  (intersectionEnter)="onSensorEnter($event, 1)">
-
-    </ngt-object3D>
-
-    <ngt-object3D [cylinderCollider]="[0.02, 1]"
-                  [options]="{ sensor: true }"
-                  [position]="[0, 1, 0]"
-                  (intersectionEnter)="onSensorEnter($event, 2)">
-
-    </ngt-object3D>
 
 </ngt-object3D>

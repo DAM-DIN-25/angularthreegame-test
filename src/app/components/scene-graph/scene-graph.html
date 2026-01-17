@@ -16,30 +16,28 @@
                 [shadow.camera.top]="10"
                 [shadow.camera.bottom]="-10" />
 
-<ngtr-physics [options]="{gravity: [0, -9.81, 0]}">
+<ngtr-physics [gravity]="[0, -9.81, 0]"
+              [size]="100"
+              [iterations]="10"
+              [timeStep]="1 / 60">
 
     <ng-template>
 
-        <app-dice [position]="[0, 1, 0]" />
-        <app-dice [position]="[2, 1, 0]" />
-        <app-dice [position]="[-2, 1, 0]" />
-        <app-dice [position]="[0, 1, 2]" />
-        <app-dice [position]="[0, 1, -2]" />
-        <app-dice [position]="[0, 1, 0]" />
-        <app-dice [position]="[2, 1, 0]" />
-        <app-dice [position]="[-2, 1, 0]" />
-        <app-dice [position]="[0, 1, 2]" />
-        <app-dice [position]="[0, 1, -2]" />
-
-        <ngt-object3D rigidBody="fixed"
-                      [userdata]="{ name: 'ground' }">
+        <ngt-object3D #ground
+                      rigidBody="fixed"
+                      [userData]="{ name: 'ground' }"
+                      [anyCollider]="[100, 1, 100]">
             <ngt-mesh [rotation]="[-Math.PI / 2, 0, 0]"
                       [position]="[0, -1, 0]"
                       receiveShadow>
-                <ngt-box-geometry *args="[100, 100]" />
+                <ngt-plane-geometry *args="[100, 100]" />
                 <ngt-mesh-standard-material color="#228B22" />
             </ngt-mesh>
         </ngt-object3D>
+
+         @for (dice of dices(); track $index) {
+            <app-dice />
+         }
 
         <ngts-contact-shadows [options]="{
                 position: [0, 0, 0],
