@@ -72,7 +72,7 @@ export type PokerDiceGLTFGLTFResult = GLTF & {
     },
   ],
 })
-export class PokerDice {
+export class DiceGltfInstance {
   protected readonly Math = Math;
 
   options = input({} as Partial<NgtThreeElements['ngt-group']>);

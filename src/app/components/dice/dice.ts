@@ -3,13 +3,13 @@ import { beforeRender } from 'angular-three';
 import * as THREE from 'three';
 import { NgtrRigidBody } from 'angular-three-rapier';
 
-import { PokerDice } from "./dice-gltf-instance";
+import { DiceGltfInstance } from "./dice-gltf-instance";
 
 @Component({
     selector: 'app-dice',
     imports: [
         NgtrRigidBody,
-        PokerDice
+        DiceGltfInstance
     ],
     templateUrl: './dice.html',
     styleUrl: './dice.css',
@@ -35,12 +35,12 @@ export class Dice {
     private initialized = false;
 
     private resultsMap: string[] = [
-        'K',
-        'Q',
-        '9',
-        'A',
-        '10',
-        'J',
+        'K',  // 0 - Down
+        'Q',  // 1 - Top
+        '9',  // 2 - Right
+        'A',  // 3 - Left
+        '10', // 4 - Back
+        'J',  // 5 - Front
     ];
 
     constructor() {
@@ -59,7 +59,7 @@ export class Dice {
     }
 
     ngAfterViewInit() {
-        this.initialize();
+        //this.initialize();
     }
 
     initialize() {

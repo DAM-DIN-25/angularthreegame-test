@@ -11,7 +11,8 @@ import { NgtsOrbitControls } from 'angular-three-soba/controls';
 import { NgtsContactShadows } from 'angular-three-soba/staging';
 import { NgtrPhysics, NgtrRigidBody, NgtrCuboidCollider, NgtrAnyCollider } from 'angular-three-rapier';
 import { Dice } from "../dice/dice";
-import { PokerDice } from "../dice/dice-gltf-instance";
+import { DiceGltfInstance } from "../dice/dice-gltf-instance";
+import { D6Dice } from "../d6-dice/d6-dice";
 
 extend(THREE);
 
@@ -25,7 +26,8 @@ extend(THREE);
     NgtrCuboidCollider,
     NgtsContactShadows,
     Dice,
-    NgtrAnyCollider
+    NgtrAnyCollider,
+    D6Dice
 ],
     templateUrl: './scene-graph.html',
     styleUrl: './scene-graph.css',
@@ -54,7 +56,7 @@ export class SceneGraph {
 
     constructor() {
 
-        this.dices.set([1, 2, 3, 4, 5]);
+        this.dices.set([1]);
         
         beforeRender((state: NgtRenderState) => {
 
