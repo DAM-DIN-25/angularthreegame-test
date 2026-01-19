@@ -2,7 +2,8 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ capacitor ]
+    # branches: [ capacitor ]
+    tags: ['v*.*.*']
 
 jobs:
   build:
