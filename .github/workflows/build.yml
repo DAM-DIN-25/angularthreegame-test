@@ -40,8 +40,8 @@ jobs:
         uses: gradle/gradle-build-action@v3
 
       - name: Build debug APK
-        run: ce android && ./gradlew assembleDebug
-  
+        run: cd android && ./gradlew assembleDebug
+
       - name: Check folder content of android output
         run: ls ./android/app/build/outputs/bundle/release
 
