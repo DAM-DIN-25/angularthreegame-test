@@ -23,22 +23,18 @@
 
     <ng-template>
 
-        <ngt-object3D #ground
-                      rigidBody="fixed"
-                      [userData]="{ name: 'ground' }"
-                      [anyCollider]="[100, 1, 100]">
-            <ngt-mesh [rotation]="[-Math.PI / 2, 0, 0]"
-                      [position]="[0, -1, 0]"
-                      receiveShadow>
-                <ngt-plane-geometry *args="[100, 100]" />
-                <ngt-mesh-standard-material color="#228B22" />
-            </ngt-mesh>
-        </ngt-object3D>
 
-         @for (dice of dices(); track $index) {
-            <!-- <app-dice /> -->
-             <app-d6-dice />
-         }
+        <ngt-mesh [rotation]="[-Math.PI / 2, -0.01, 0]"
+                  [position]="[0, 0, 0]"
+                  receiveShadow>
+            <ngt-plane-geometry *args="[100, 100]" />
+            <ngt-mesh-standard-material color="#228B22" />
+        </ngt-mesh>
+
+
+        @for (dice of dices(); track $index) {
+            <app-d6-dice [diceConfig]="dice" />
+        }
 
         <ngts-contact-shadows [options]="{
                 position: [0, 0, 0],
@@ -51,9 +47,11 @@
             }" />
 
         <!-- invisible walls -->
+        <!-- floor -->
         <ngt-object3D [cuboidCollider]="[limitHeight(), 1, limitHeight()]"
                       [userdata]="{ name: 'ground' }"
-                      [position]="[0, -6, 0]" />
+                      [position]="[0, -1, 0]" />
+        <!-- walls -->
         <ngt-object3D [cuboidCollider]="[limitWidth(), limitHeight(), 1]"
                       [userdata]="{ name: 'ground' }"
                       [position]="[0, 0, -limitWidth()]" />
@@ -66,6 +64,11 @@
         <ngt-object3D [cuboidCollider]="[1, limitHeight(), limitWidth()]"
                       [userdata]="{ name: 'ground' }"
                       [position]="[limitWidth(), 0, 0]" />
+        <!-- top -->
+        <ngt-object3D [cuboidCollider]="[limitWidth(), 1, limitHeight()]"
+                      [userdata]="{ name: 'ground' }"
+                      [position]="[0, limitHeight(), 0]" />
+
 
     </ng-template>
 

@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, input, ResourceRef, signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, input, signal, AfterViewInit, ResourceRef } from '@angular/core';
 import { NgtsDecal } from 'angular-three-soba/misc';
 import { textureResource } from 'angular-three-soba/loaders';
 import * as THREE from 'three';
@@ -10,25 +10,32 @@ import * as THREE from 'three';
     styleUrl: './dice-face.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class DiceFace {
+export class DiceFace implements AfterViewInit {
 
     side = input<string>('top');
 
-    faceTexture = input<ResourceRef<THREE.Texture<HTMLImageElement> | undefined>>(
-        textureResource(
-            () => 'data:image/svg+xml,' +
-                encodeURIComponent(`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-                        <text x="64" y="96" font-size="96" text-anchor="middle" fill="#ff00ff" font-family="Arial">?</text>
-                    </svg>
-                `))
+    faceRef = input<string>(
+        'assets/faces/empty.svg'
+        // textureResource(
+        //     () => 'data:image/svg+xml,' +
+        //         encodeURIComponent(`
+        //             <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+        //                 <text x="64" y="96" font-size="96" text-anchor="middle" fill="#ff00ff" font-family="Arial">?</text>
+        //             </svg>
+        //         `))
     );
+
+    faceTexture = signal<ResourceRef<THREE.Texture<HTMLImageElement> | undefined> | undefined>(undefined);
 
     position = signal<[number, number, number]>([0, 0.5, 0]);
     rotation = signal<[number, number, number]>([-Math.PI / 2, 0, 0]);
 
-    ngAfterViewInit() {    
+    constructor() {
+        const resource = textureResource(() => this.faceRef());
+        this.faceTexture.set(resource);
+    }
 
+    ngAfterViewInit() {    
         const distance = 0.2;
 
         switch (this.side()) {

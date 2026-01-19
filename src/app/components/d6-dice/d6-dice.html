@@ -2,25 +2,31 @@
               rigidBody
               [options]="{
                     restitution: 0.7,
+                    linearVelocity: velocity(),
+                    angularVelocity: angularVelocity()
                }"
               [position]="position()"
               (click)="onDiceClick()"
               (pointerover)="hovered.set(true)"
               (pointerout)="hovered.set(false)"
+              [cuboidCollider]="[0.5, 0.5, 0.5]"
+              debug
               castShadow>
 
     <ngts-rounded-box *args="[1.5, 1.5, 1.5]"
                       [options]="{ radius: 0.1, smoothness: 4 }">
+
+
         <ngt-mesh-standard-material [color]="color()"
                                     [metalness]="0.5"
-                                    [roughness]="0.3" />
+                                    [roughness]="0.1" />
 
-        <app-dice-face side="top" [faceTexture]="faceAce()"></app-dice-face>
-        <app-dice-face side="bottom" [faceTexture]="face9()"></app-dice-face>
-        <app-dice-face side="right" [faceTexture]="face10()"></app-dice-face>
-        <app-dice-face side="front" [faceTexture]="faceJ()"></app-dice-face>
-        <app-dice-face side="back" [faceTexture]="faceQ()"></app-dice-face>
-        <app-dice-face side="left" [faceTexture]="faceK()"></app-dice-face>
+        @for(face of diceConfig().faces; track face.side) {
+            <app-dice-face [side]="face.side"
+                           rigidBody
+                           [options]="{ colliders: false }"
+                           [faceRef]="face.textureRef" />
+        }
 
     </ngts-rounded-box>
 
