@@ -56,9 +56,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.event.head_commit.messagef }}
+          release_name: Release ${{ github.event.head_commit.message }}
           body: |
-            Automated release of DiceGame APK for tag ${{ github.ref }}.
+            Automated release of DiceGame APK for tag ${{ github.event.head_commit.message }}.
           draft: false
           prerelease: false
