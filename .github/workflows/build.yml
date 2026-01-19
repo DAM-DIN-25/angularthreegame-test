@@ -52,13 +52,12 @@ jobs:
           path: android/app/build/outputs/apk/debug/app-debug.apk
       
       - name: Release APK
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
-          body: |
-            Automated release of DiceGame APK for tag ${{ github.sha }}.
+          name: "Release: ${{ github.sha }}"
+          body: "Automated debug release for ${{ github.sha }}"
+          files: android/app/build/outputs/apk/debug/app-debug.apk
           draft: false
           prerelease: false
