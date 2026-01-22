@@ -57,10 +57,24 @@ export class SceneGraph implements AfterViewChecked {
         this.dices.set(
             [
                 this.gameService.pokerDice,
-                // this.gameService.pokerDice,
-                // this.gameService.pokerDice,
-                // this.gameService.pokerDice,
-                // this.gameService.pokerDice,
+                this.gameService.pokerDice,
+                this.gameService.pokerDice,
+                this.gameService.pokerDice,
+                this.gameService.pokerDice,
+                this.gameService.d6,
+                this.gameService.d6,
+                this.gameService.d6,
+                this.gameService.d6,
+                this.gameService.d6,
+                this.gameService.pokerDice,
+                this.gameService.pokerDice,
+                this.gameService.pokerDice,
+                this.gameService.pokerDice,
+                this.gameService.pokerDice,
+                this.gameService.d6,
+                this.gameService.d6,
+                this.gameService.d6,
+                this.gameService.d6,
                 this.gameService.d6,
             ]
         );

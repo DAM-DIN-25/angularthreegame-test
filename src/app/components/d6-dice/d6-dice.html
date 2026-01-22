@@ -3,10 +3,12 @@
               [options]="{
                     restitution: 0.7,
                     linearVelocity: velocity(),
-                    angularVelocity: angularVelocity()
+                    angularVelocity: angularVelocity(),
+                    lockRotations: lockRotation(),
                }"
               [position]="position()"
               (click)="onDiceClick()"
+              (pointerdown)="startDrag()"
               (pointerover)="hovered.set(true)"
               (pointerout)="hovered.set(false)"
               [cuboidCollider]="[0.5, 0.5, 0.5]"
@@ -22,10 +24,10 @@
                                     [roughness]="0.1" />
 
         @for(face of diceConfig().faces; track face.side) {
-            <app-dice-face [side]="face.side"
-                           rigidBody
-                           [options]="{ colliders: false }"
-                           [faceRef]="face.textureRef" />
+        <app-dice-face [side]="face.side"
+                       rigidBody
+                       [options]="{ colliders: false }"
+                       [faceRef]="face.textureRef" />
         }
 
     </ngts-rounded-box>

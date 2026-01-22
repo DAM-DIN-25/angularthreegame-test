@@ -2,11 +2,12 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, inject, input, output, signa
 import { beforeRender, NgtArgs } from 'angular-three';
 import { NgtsRoundedBox } from 'angular-three-soba/abstractions';
 import { NgtrRigidBody, NgtrCuboidCollider } from 'angular-three-rapier';
-import { DiceFace } from '../dice-face/dice-face';
 
 import * as THREE from 'three';
+
 import { GameService } from '../../services/game-service';
 import { DiceResult, DiceType } from '../../services/dice-type';
+import { DiceFace } from '../dice-face/dice-face';
 
 @Component({
     selector: 'app-d6-dice',
@@ -22,9 +23,9 @@ export class D6Dice implements AfterViewInit {
     diceConfig = input.required<DiceType>();
     position = input<[number, number, number]>([Math.random(), 4, Math.random()]);
     color = input<string>('white');
-    
+
     result = output<string>();
-    
+
     gameService = inject(GameService);
 
     diceRef = viewChild.required(NgtrRigidBody);
@@ -36,20 +37,12 @@ export class D6Dice implements AfterViewInit {
     deviceAcceleration = this.gameService.deviceAcceleration;
 
     private resultEmitted = false;
-    private initialized = false;
 
-    // private resultsMap: string[] = [
-    //     '9',  // 0 - Down
-    //     'A',  // 1 - Top
-    //     'K',  // 2 - Right
-    //     '10',  // 3 - Left
-    //     'Q', // 4 - Back
-    //     'J',  // 5 - Front
-    // ];
+    lockRotation = signal<boolean>(false);
 
     detectReroll = effect(() => {
         const acceleration = this.deviceAcceleration();
-        if (Math.abs(acceleration) > 5) {
+        if (this.diceRef().rigidBody()?.isSleeping() && Math.abs(acceleration) > 5) {
             this.reroll();
         }
     });
@@ -59,22 +52,52 @@ export class D6Dice implements AfterViewInit {
     }
 
     constructor() {
-        beforeRender(() => {
-            if (this.diceRef().rigidBody()?.isSleeping() && this.initialized && !this.resultEmitted) {
+
+
+        beforeRender(({ pointer: { x, y }, viewport: { width, height } }) => {
+
+            // TODO: Implement drag functionality properly
+            
+            // if (this.hovered()) {
+            //     const dice = this.diceRef();
+            //     dice.objectRef.nativeElement.position.lerp(
+            //         new THREE.Vector3(
+            //             (x * width) / 100,
+            //             dice.objectRef.nativeElement.position.y,
+            //             (y * height) / 100
+            //         ),
+            //         0.1
+            //     );
+            // }
+
+            if (this.diceRef().rigidBody()?.isSleeping() && !this.resultEmitted) {
                 this.checkResult();
             }
         });
     }
 
+    isDragging = signal(false);
+
+    startDrag() {
+        // this.isDragging.set(true);
+    }
+
+    stopDrag() {
+        // this.isDragging.set(false);
+    }
+
     reroll() {
+        console.log('Rerolling dice...');
+        this.lockRotation.set(false);
+
         const dice = this.diceRef();
 
-        if (!dice || !dice.rigidBody() || !dice.rigidBody()!.isSleeping()) {
-            return;
-        }
+        // if (!dice || !dice.rigidBody() || !dice.rigidBody()!.isSleeping()) {
+        //     return;
+        // }
+
 
         this.resultEmitted = false;
-        this.initialized = true;
 
         this.velocity.set([
             (Math.random() - 0.5) * 5,
@@ -94,7 +117,9 @@ export class D6Dice implements AfterViewInit {
     }
 
     onDiceClick() {
-        this.reroll();
+        if (this.resultEmitted) {
+            this.reroll();
+        }
     }
 
     checkResult() {
@@ -135,10 +160,13 @@ export class D6Dice implements AfterViewInit {
                 diceType: this.diceConfig(),
                 face: this.diceConfig().faces.find(face => face.side === results[0])!,
             };
-            
+
             this.result.emit(finalResult.face.key);
             this.resultEmitted = true;
             console.log('Dice result:', finalResult.face.key);
+            this.velocity.set([0, 0, 0]);
+            this.angularVelocity.set([0, 0, 0]);
+            this.lockRotation.set(true);
         }
         else {
             console.log('Multiple faces detected touching ground, rerolling...');
