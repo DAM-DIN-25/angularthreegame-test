@@ -31,8 +31,8 @@
     "dev": "npm-run-all --parallel electron start",
     "electron": "wait-on tcp:4200 && ng build --base-href ./ && electron .",
     "package": "ng build && electron-builder",
-    "package-win": "ng build && electron-builder --win",
-    "package-linux": "ng build && electron-builder build --publish always --x64 -l appimage"
+    "package-win": "ng build && electron-builder --win nsis portable --publish never",
+    "package-linux": "ng build && electron-builder build --x64 -l appimage --publish never"
   },
   "prettier": {
     "printWidth": 100,

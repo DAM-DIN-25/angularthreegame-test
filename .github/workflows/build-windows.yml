@@ -29,33 +29,29 @@ jobs:
       - name: Check folder content output
         run: ls ./dist/win-unpacked/*.exe
 
-      - name: Compress folder to ZIP
-        run: |
-          cd dist/win-unpacked
-          zip -r ../ThreeGame-windows.zip ./*
-
-      - name: Upload ZIP
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: ThreeGame-windows-ZIP
-          path: ./dist/ThreeGame-windows.zip
+          name: ThreeGame-windows
+          path: ./dist/*.exe
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          on_release_exists: update
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
 
-      - name: Upload ZIP artifact
+      - name: Upload artifacts
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/ThreeGame-windows.zip
-          asset_name: "ThreeGame-windows${{ github.ref }}.zip"
-          asset_content_type: application/zip
+          asset_path: ./dist/*.exe
+          asset_name: "ThreeGame-windows${{ github.ref }}.exe"
+          asset_content_type: application/x-msdownload
