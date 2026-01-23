@@ -1,6 +1,6 @@
 {
   "name": "three-game",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "main": "main.js",
   "build": {
     "appId": "org.iescamp.din.three-game",
