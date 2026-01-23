@@ -66,16 +66,6 @@ export class SceneGraph implements AfterViewChecked {
                 this.gameService.d6,
                 this.gameService.d6,
                 this.gameService.d6,
-                this.gameService.pokerDice,
-                this.gameService.pokerDice,
-                this.gameService.pokerDice,
-                this.gameService.pokerDice,
-                this.gameService.pokerDice,
-                this.gameService.d6,
-                this.gameService.d6,
-                this.gameService.d6,
-                this.gameService.d6,
-                this.gameService.d6,
             ]
         );
 
