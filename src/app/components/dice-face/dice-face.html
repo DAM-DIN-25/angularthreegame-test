@@ -1,5 +1,5 @@
 <ngts-decal [options]="{ position: position(), scale: 0.75, rotation: rotation(), debug: false }">
-    <ngt-mesh-standard-material [map]="faceTexture().value()"
+    <ngt-mesh-standard-material [map]="faceTexture()?.value()"
                                 transparent,
                                 [poligonOffset]="true"
                                 [polygonOffsetFactor]="-10" />

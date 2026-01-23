@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output, signal, viewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output, signal, viewChild, AfterViewInit } from '@angular/core';
 import { beforeRender } from 'angular-three';
 import * as THREE from 'three';
 import { NgtrRigidBody } from 'angular-three-rapier';
@@ -15,7 +15,7 @@ import { DiceGltfInstance } from "./dice-gltf-instance";
     styleUrl: './dice.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class Dice {
+export class Dice implements AfterViewInit {
 
     rotation = signal<[number, number, number]>([0, 0, 0]);
     initialVelocity = signal<[number, number, number]>([0, 0, 0]);
@@ -59,7 +59,7 @@ export class Dice {
     }
 
     ngAfterViewInit() {
-        //this.initialize();
+        this.initialize();
     }
 
     initialize() {

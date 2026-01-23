@@ -12,5 +12,4 @@ import { SceneGraph } from './components/scene-graph/scene-graph';
     styleUrl: './app.css'
 })
 export class App {
-
 }
