@@ -52,13 +52,24 @@ jobs:
           name: DiceGame-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
       
-      - name: Release APK
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      # - name: Release APK
+      #   uses: softprops/action-gh-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      #   with:
+      #     name: "Release: ${{ github.sha }}"
+      #     body: "Automated debug release for ${{ github.sha }}"
+      #     files: android/app/build/outputs/apk/debug/app-debug.apk
+      #     draft: false
+      #     prerelease: false
+
+      - name: Download Artifact (for testing purposes)
+        uses: actions/download-artifact@v4
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: "Release: ${{ github.sha }}"
-          body: "Automated debug release for ${{ github.sha }}"
           files: android/app/build/outputs/apk/debug/app-debug.apk
-          draft: false
-          prerelease: false
+          tag_name: ${{ github.sha }}
+          body: "Automated release for commit ${{ github.sha }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
