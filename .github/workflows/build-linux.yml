@@ -1,25 +1,18 @@
-name: Build Android APK
+name: Build Linux version
 
 on:
   push:
-    # branches: [ capacitor ]
     tags: ['v*.*.*']
 
 jobs:
   build:
-    name: Build APK
+    name: Build Linux
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-      
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
@@ -29,29 +22,16 @@ jobs:
         run: npm install
 
       - name: Build Angular project
-        run: npm run build
-
-      - name:  Add android folder if not present
-        run: if [ ! -d "./android" ]; then npx cap add android; fi
-
-      - name: Sync Capacitor
-        run: npx cap sync
-
-      - name: Setup Gradle cache
-        uses: gradle/gradle-build-action@v3
-
-      - name: Build debug APK
-        run: cd android && ./gradlew assembleDebug
+        run: npm run package-linux
 
       - name: Check folder content of android output
-        run: ls ./android/app/build/outputs/apk/debug
+        run: ls ./dist/*.AppImage
 
-      - name: Upload APK
+      - name: Upload AppImage
         uses: actions/upload-artifact@v4
         with:
-          name: DiceGame-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-
+          name: ThreeGame-linux-AppImage
+          path: ./dist/*.AppImage
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -69,6 +49,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./android/app/build/outputs/apk/debug/app-debug.apk
-          asset_name: "DiceGame-debug${{ github.ref }}.apk"
-          asset_content_type: application/vnd.android.package-archive
+          asset_path: ./dist/*.AppImage
+          asset_name: "ThreeGame-linux${{ github.ref }}.AppImage"
+          asset_content_type: application/x-appimage

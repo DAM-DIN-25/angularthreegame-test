@@ -1,0 +1,59 @@
+name: Build Linux version
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+jobs:
+  build:
+    name: Build Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Angular project
+        run: npm run package-win
+
+      - name: Check folder content of android output
+        run: ls ./dist/win-unpacked/*.exe
+
+      - name: Compress folder to ZIP
+        run: |
+          cd dist/win-unpacked
+          zip -r ../ThreeGame-windows.zip ./*
+
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: ThreeGame-windows-ZIP
+          path: ./dist/ThreeGame-windows.zip
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload APK artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/ThreeGame-windows.zip
+          asset_name: "ThreeGame-windows${{ github.ref }}.zip"
+          asset_content_type: application/zip
