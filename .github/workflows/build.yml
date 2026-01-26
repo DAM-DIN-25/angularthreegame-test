@@ -36,24 +36,6 @@ jobs:
 
 # ---------- UPLOAD ARTIFACTS TO THE RELEASE
 
-## Release APK
-
-      - name: Download APK artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: apk-${{ github.sha }}
-          path: ./dist/
-
-      - name: Release APK artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/*.apk
-          asset_name: "DiceGame-debug${{ github.ref }}.apk"
-          asset_content_type: application/vnd.android.package-archive
-
 ## Release Linux binaries
 
       - name: Download Linux AppImage artifact
@@ -87,3 +69,21 @@ jobs:
           asset_path: ./dist/*.exe
           asset_name: "ThreeGame-windows${{ github.ref }}.exe"
           asset_content_type: application/vnd.microsoft.portable-executable
+
+## Release APK
+
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: apk-${{ github.sha }}
+          path: ./dist/
+
+      - name: Release APK artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/*.apk
+          asset_name: "DiceGame-debug${{ github.ref }}.apk"
+          asset_content_type: application/vnd.android.package-archive
