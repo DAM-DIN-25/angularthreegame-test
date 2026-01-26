@@ -1,57 +1,28 @@
-name: Build Android APK
+name: Build and Deploy all platforms
 
 on:
   push:
-    # branches: [ capacitor ]
     tags: ['v*.*.*']
 
 jobs:
-  build:
-    name: Build APK
+  build-linux:
+    uses: ./.github/workflows/build-linux.yml
+
+  build-windows:
+    uses: ./.github/workflows/build-windows.yml
+
+  build-apk:
+    uses: ./.github/workflows/build-apk.yml
+
+  deploy:
+    needs: [
+      build-linux,
+      build-apk,
+      build-windows
+    ]
+    name: Deploy Artifacts
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Angular project
-        run: npm run build
-
-      - name:  Add android folder if not present
-        run: if [ ! -d "./android" ]; then npx cap add android; fi
-
-      - name: Sync Capacitor
-        run: npx cap sync
-
-      - name: Setup Gradle cache
-        uses: gradle/gradle-build-action@v3
-
-      - name: Build debug APK
-        run: cd android && ./gradlew assembleDebug
-
-      - name: Check folder content of android output
-        run: ls ./android/app/build/outputs/apk/debug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: DiceGame-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -63,12 +34,88 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload APK artifact
+# ---------- UPLOAD ARTIFACTS TO THE RELEASE
+
+## Release Linux binaries
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-linux.outputs.artifact-name }}
+          path: ./downloaded
+
+      - id: find-appimage
+        name: Find downloaded AppImage
+        run: |
+          FILE=$(find ./downloaded -type f -name '*.AppImage' | head -n1 || true)
+          if [ -z "$FILE" ]; then
+            echo "No AppImage found in ./downloaded" >&2
+            exit 1
+          fi
+          echo "appfile=$FILE" >> $GITHUB_OUTPUT
+
+      - name: Release Linux AppImage artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./android/app/build/outputs/apk/debug/app-debug.apk
+          asset_path: ${{ steps.find-appimage.outputs.appfile }}
+          asset_name: "ThreeGame-linux${{ github.ref }}.AppImage"
+          asset_content_type: application/x-appimage
+
+## Release Windows binaries
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-windows.outputs.artifact-name }}
+          path: ./downloaded-windows
+
+      - id: find-windows
+        name: Find downloaded Windows EXE
+        run: |
+          FILE=$(find ./downloaded-windows -type f -name '*.exe' | head -n1 || true)
+          if [ -z "$FILE" ]; then
+            echo "No Windows EXE found in ./downloaded-windows" >&2
+            exit 1
+          fi
+          echo "appfile=$FILE" >> $GITHUB_OUTPUT
+
+      - name: Release Windows EXE artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.find-windows.outputs.appfile }}
+          asset_name: "ThreeGame-windows${{ github.ref }}.exe"
+          asset_content_type: application/vnd.microsoft.portable-executable
+
+## Release APK
+
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-apk.outputs.artifact-name }}
+          path: ./downloaded-apk
+
+      - id: find-apk
+        name: Find downloaded APK
+        run: |
+          FILE=$(find ./downloaded-apk -type f -name '*.apk' | head -n1 || true)
+          if [ -z "$FILE" ]; then
+            echo "No APK found in ./downloaded-apk" >&2
+            exit 1
+          fi
+          echo "appfile=$FILE" >> $GITHUB_OUTPUT
+
+      - name: Release APK artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.find-apk.outputs.appfile }}
           asset_name: "DiceGame-debug${{ github.ref }}.apk"
           asset_content_type: application/vnd.android.package-archive

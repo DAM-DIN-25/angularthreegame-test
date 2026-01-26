@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-labelledby="title">
+  <title id="title">Cara 6 de un dado</title>
+  <circle cx="20" cy="20" r="15" fill="#000000"/>
+  <circle cx="20" cy="64" r="15" fill="#000000"/>
+  <circle cx="20" cy="108" r="15" fill="#000000"/>
+  <circle cx="108" cy="20" r="15" fill="#000000"/>
+  <circle cx="108" cy="64" r="15" fill="#000000"/>
+  <circle cx="108" cy="108" r="15" fill="#000000"/>
+</svg>

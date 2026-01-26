@@ -1,0 +1,48 @@
+name: Build Windows version
+
+on:
+  workflow_call:
+    outputs:
+      artifact-name:
+        description: "Name of uploaded artifact"
+        value: ${{ jobs.build.outputs.artifact-name }}
+
+jobs:
+  build:
+    name: Build Windows
+    runs-on: windows-latest
+    outputs:
+      artifact-name: ${{ steps.set-artifact.outputs.artifact-name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run package-win
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check folder content output
+        run: ls ./dist/win-unpacked/*.exe
+
+      - name: Upload
+        id: upload-windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-${{ github.sha }}
+          path: ./dist/*.exe
+
+      - id: set-artifact
+        name: Set artifact-name output
+        run: |
+          $artifactName = "windows-${{ github.sha }}"
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "artifact-name=$artifactName"
