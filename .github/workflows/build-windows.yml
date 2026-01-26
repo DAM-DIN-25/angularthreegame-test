@@ -44,5 +44,5 @@ jobs:
       - id: set-artifact
         name: Set artifact-name output
         run: |
-          ARTIFACT_NAME="windows-${{ github.sha }}"
-          echo "artifact-name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+          $artifactName = "windows-${{ github.sha }}"
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "artifact-name=$artifactName"
