@@ -36,7 +36,13 @@ jobs:
 
 # ---------- UPLOAD ARTIFACTS TO THE RELEASE
 
+      - run:
+          echo "Linux AppImage ${{ needs.build-linux.outputs.artifact-name }}"
+          echo "Windows EXE ${{ needs.build-windows.outputs.artifact-name }}"
+          echo "APK ${{ needs.build-apk.outputs.artifact-name }}"
+
 ## Release Linux binaries
+
 
       - name: Release Linux AppImage artifact
         uses: actions/upload-release-asset@v1
