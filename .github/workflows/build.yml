@@ -41,7 +41,7 @@ jobs:
       - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
-          name: apk-${{ github.ref }}
+          name: apk-${{ github.sha }}
           path: ./dist/
 
       - name: Release APK artifact
@@ -59,7 +59,7 @@ jobs:
       - name: Download Linux AppImage artifact
         uses: actions/download-artifact@v4
         with:
-          name: appimage-${{ github.ref }}
+          name: appimage-${{ github.sha }}
 
       - name: Release Linux AppImage artifact
         uses: actions/upload-release-asset@v1
@@ -76,7 +76,7 @@ jobs:
       - name: Download Windows EXE artifact
         uses: actions/download-artifact@v4
         with:
-          name: windows-${{ github.ref }}
+          name: windows-${{ github.sha }}
 
       - name: Release Windows EXE artifact
         uses: actions/upload-release-asset@v1
