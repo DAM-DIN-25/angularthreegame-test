@@ -17,8 +17,8 @@ jobs:
   deploy:
     needs: [
       build-linux,
-      build-apk,
-      build-windows
+      # build-apk,
+      # build-windows
     ]
     name: Deploy Artifacts
     runs-on: ubuntu-latest
@@ -36,10 +36,9 @@ jobs:
 
 # ---------- UPLOAD ARTIFACTS TO THE RELEASE
 
-      - run:
-          echo "Linux AppImage ${{ needs.build-linux.outputs.artifact-name }}"
-          echo "Windows EXE ${{ needs.build-windows.outputs.artifact-name }}"
-          echo "APK ${{ needs.build-apk.outputs.artifact-name }}"
+      - run: echo "Linux AppImage ${{ needs.build-linux.outputs.artifact-name }}"
+      # - run: echo "Windows EXE ${{ needs.build-windows.outputs.artifact-name }}"
+      # - run: echo "APK ${{ needs.build-apk.outputs.artifact-name }}"
 
 ## Release Linux binaries
 
@@ -54,26 +53,26 @@ jobs:
           asset_name: "ThreeGame-linux${{ github.ref }}.AppImage"
           asset_content_type: application/x-appimage
 
-## Release Windows binaries
+# ## Release Windows binaries
 
-      - name: Release Windows EXE artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ needs.build-windows.outputs.artifact-name }}
-          asset_name: "ThreeGame-windows${{ github.ref }}.exe"
-          asset_content_type: application/vnd.microsoft.portable-executable
+#       - name: Release Windows EXE artifact
+#         uses: actions/upload-release-asset@v1
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           upload_url: ${{ steps.create_release.outputs.upload_url }}
+#           asset_path: ${{ needs.build-windows.outputs.artifact-name }}
+#           asset_name: "ThreeGame-windows${{ github.ref }}.exe"
+#           asset_content_type: application/vnd.microsoft.portable-executable
 
-## Release APK
+# ## Release APK
 
-      - name: Release APK artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ needs.build-apk.outputs.artifact-name }}
-          asset_name: "DiceGame-debug${{ github.ref }}.apk"
-          asset_content_type: application/vnd.android.package-archive
+#       - name: Release APK artifact
+#         uses: actions/upload-release-asset@v1
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           upload_url: ${{ steps.create_release.outputs.upload_url }}
+#           asset_path: ${{ needs.build-apk.outputs.artifact-name }}
+#           asset_name: "DiceGame-debug${{ github.ref }}.apk"
+#           asset_content_type: application/vnd.android.package-archive
