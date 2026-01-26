@@ -1,8 +1,11 @@
 name: Build Windows version
 
 on:
-  push:
-    tags: ['v*.*.*']
+  workflow_call:
+    outputs:
+      artifact-name:
+        description: "Name of uploaded artifact"
+        value: ${{ jobs.build.outputs.artifact-name }}
 
 jobs:
   build:
@@ -34,24 +37,25 @@ jobs:
         with:
           name: ThreeGame-windows
           path: ./dist/*.exe
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          on_release_exists: update
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
 
-      - name: Upload artifacts
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/*.exe
-          asset_name: "ThreeGame-windows${{ github.ref }}.exe"
-          asset_content_type: application/x-msdownload
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     on_release_exists: update
+      #     tag_name: ${{ github.ref }}
+      #     release_name: Release ${{ github.ref }}
+      #     draft: false
+      #     prerelease: false
+
+      # - name: Upload artifacts
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./dist/*.exe
+      #     asset_name: "ThreeGame-windows${{ github.ref }}.exe"
+      #     asset_content_type: application/x-msdownload

@@ -1,0 +1,74 @@
+name: Build and Deploy all platforms
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+jobs:
+  build-linux:
+    uses: ./.github/workflows/build_linux.yml
+
+  build-windows:
+    uses: ./.github/workflows/build_windows.yml
+
+  build-apk:
+    uses: ./.github/workflows/build_apk.yml
+
+  deploy:
+    needs: [
+      build-linux,
+      build-apk,
+      build-windows
+    ]
+    name: Deploy Artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          on_release_exists: update
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+# ---------- UPLOAD ARTIFACTS TO THE RELEASE
+
+## Upload APK artifact
+
+      - name: Upload APK artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./android/app/build/outputs/apk/debug/app-debug.apk
+          asset_name: "DiceGame-debug${{ github.ref }}.apk"
+          asset_content_type: application/vnd.android.package-archive
+
+## Upload Linux AppImage
+
+      - name: Upload Linux AppImage artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/*.AppImage
+          asset_name: "ThreeGame-linux${{ github.ref }}.AppImage"
+          asset_content_type: application/x-appimage
+
+## Upload Windows EXE
+
+      - name: Upload Windows EXE artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/*.exe
+          asset_name: "ThreeGame-windows${{ github.ref }}.exe"
+          asset_content_type: application/vnd.microsoft.portable-executable
