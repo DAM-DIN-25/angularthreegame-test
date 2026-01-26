@@ -46,26 +46,3 @@ jobs:
         run: |
           ARTIFACT_NAME="appimage-${{ github.sha }}"
           echo "artifact-name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
-
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     on_release_exists: update
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Upload AppImage artifact
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./dist/*.AppImage
-      #     asset_name: "ThreeGame-linux${{ github.ref }}.AppImage"
-      #     asset_content_type: application/x-appimage

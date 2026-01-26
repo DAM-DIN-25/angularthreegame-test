@@ -11,6 +11,8 @@ jobs:
   build:
     name: Build APK
     runs-on: ubuntu-latest
+    outputs:
+      artifact-name: ${{ steps.set-artifact.outputs.artifact-name }}
 
     steps:
       - name: Checkout repository
@@ -49,29 +51,14 @@ jobs:
         run: ls ./android/app/build/outputs/apk/debug
 
       - name: Upload APK
+        id: upload-apk
         uses: actions/upload-artifact@v4
         with:
           name: apk-${{ github.sha }}
           path: ./android/app/build/outputs/apk/debug/*.apk
 
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     on_release_exists: update
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Upload APK artifact
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./android/app/build/outputs/apk/debug/app-debug.apk
-      #     asset_name: "DiceGame-debug${{ github.ref }}.apk"
-      #     asset_content_type: application/vnd.android.package-archive
+      - id: set-artifact
+        name: Set artifact-name output
+        run: |
+          ARTIFACT_NAME="apk-${{ github.sha }}"
+          echo "artifact-name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
