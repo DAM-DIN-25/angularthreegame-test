@@ -4,7 +4,9 @@
 
 # Compiled output
 /dist
+!/dist/ThreeGame
 !/dist/ThreeGame/browser
+!/dist/ThreeGame/browser/**
 /tmp
 /out-tsc
 /bazel-out
