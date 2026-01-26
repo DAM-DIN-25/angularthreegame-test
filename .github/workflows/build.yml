@@ -46,6 +46,16 @@ jobs:
           name: ${{ needs.build-linux.outputs.artifact-name }}
           path: ./downloaded
 
+      - id: find-appimage
+        name: Find downloaded AppImage
+        run: |
+          FILE=$(find ./downloaded -type f -name '*.AppImage' | head -n1 || true)
+          if [ -z "$FILE" ]; then
+            echo "No AppImage found in ./downloaded" >&2
+            exit 1
+          fi
+          echo "appfile=$FILE" >> $GITHUB_OUTPUT
+
 ## Release Linux binaries
 
 
@@ -55,7 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./downloaded/*.AppImage
+          asset_path: ${{ steps.find-appimage.outputs.appfile }}
           asset_name: "ThreeGame-linux${{ github.ref }}.AppImage"
           asset_content_type: application/x-appimage
 
