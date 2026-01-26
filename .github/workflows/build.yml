@@ -40,6 +40,12 @@ jobs:
       # - run: echo "Windows EXE ${{ needs.build-windows.outputs.artifact-name }}"
       # - run: echo "APK ${{ needs.build-apk.outputs.artifact-name }}"
 
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-linux.outputs.artifact-name }}
+          path: ./downloaded
+
 ## Release Linux binaries
 
 
@@ -49,7 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ needs.build-linux.outputs.artifact-name }}
+          asset_path: ./downloaded/*.AppImage
           asset_name: "ThreeGame-linux${{ github.ref }}.AppImage"
           asset_content_type: application/x-appimage
 

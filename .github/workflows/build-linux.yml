@@ -12,7 +12,7 @@ jobs:
     name: Build Linux
     runs-on: ubuntu-latest
     outputs:
-      artifact-name: ${{ steps.upload.outputs.artifact-name }}
+      artifact-name: ${{ steps.set-artifact.outputs.artifact-name }}
 
     steps:
       - name: Checkout repository
@@ -40,6 +40,12 @@ jobs:
         with:
           name: appimage-${{ github.sha }}
           path: ./dist/*.AppImage
+
+      - id: set-artifact
+        name: Set artifact-name output
+        run: |
+          ARTIFACT_NAME="appimage-${{ github.sha }}"
+          echo "artifact-name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
 
 
       # - name: Create Release
