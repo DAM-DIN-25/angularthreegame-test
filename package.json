@@ -25,7 +25,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build_pages": "ng build --configuration=production --base-href=/ThreeGame/  && rm -rf docs/* && cp -r dist/ThreeGame/browser/* docs/",
+    "build_pages": "ng build --configuration=production && rm -rf docs/* && cp -r dist/ThreeGame/browser/* docs/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
