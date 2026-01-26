@@ -35,7 +35,7 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: ThreeGame-windows
+          name: windows-${{ github.ref }}
           path: ./dist/*.exe
 
       # - name: Create Release
